@@ -30,6 +30,7 @@ class _LearnScreenState extends State<LearnScreen> {
       ),
       body: AppBackground(
         child: Column(children: [
+          const SizedBox(height: 12),
           SizedBox(
             height: 48,
             child: ListView.separated(
@@ -72,25 +73,42 @@ class _LearnScreenState extends State<LearnScreen> {
               itemCount: _filtered.length,
               itemBuilder: (_, i) {
                 final word = _filtered[i];
+                final lines = word.word.split('\n');
+                final bangla = lines[0];
+                final english = lines.length > 1 ? lines[1] : '';
                 return GestureDetector(
                   onTap: () => Navigator.push(context,
                       MaterialPageRoute(builder: (_) => LearnDetailScreen(word: word))),
                   child: Container(
                     decoration: BoxDecoration(
-                      color: AppColors.card, borderRadius: BorderRadius.circular(14),
+                      color: AppColors.card,
+                      borderRadius: BorderRadius.circular(14),
                       border: Border.all(color: AppColors.border),
                     ),
-                    child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-                      Text(word.emoji, style: const TextStyle(fontSize: 30)),
-                      const SizedBox(height: 8),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 6),
-                        child: Text(word.word,
-                            style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700,
-                                color: AppColors.text, height: 1.4),
-                            textAlign: TextAlign.center),
-                      ),
-                    ]),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          bangla,
+                          style: const TextStyle(
+                            fontSize: 28,
+                            fontWeight: FontWeight.w800,
+                            color: AppColors.text,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 6),
+                        Text(
+                          english,
+                          style: const TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.textMuted,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
                   ),
                 );
               },
@@ -198,7 +216,7 @@ class _LearnDetailScreenState extends State<LearnDetailScreen> {
           const SectionHeader(title: 'How to Sign'),
           ...['Position your hand in front of the camera',
             'Form the sign for "$english"',
-            'Hold the position for 1–2 seconds',
+            'Hold the position for 1-2 seconds',
             'Keep your hand in the detection frame',
           ].asMap().entries.map((e) => Padding(
             padding: const EdgeInsets.only(bottom: 10),
