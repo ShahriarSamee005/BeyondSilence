@@ -9,22 +9,23 @@ void main() {
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
-  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+  SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
     statusBarIconBrightness: Brightness.light,
     systemNavigationBarColor: AppColors.bg,
     systemNavigationBarIconBrightness: Brightness.light,
   ));
-  runApp(const BanglaSLTApp());
+  runApp(const BeyondSilenceApp());
 }
 
-class BanglaSLTApp extends StatelessWidget {
-  const BanglaSLTApp({super.key});
+class BeyondSilenceApp extends StatelessWidget {
+  const BeyondSilenceApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: AppConstants.appName,
+      title: 'BeyondSilence',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.theme,
       home: const SplashScreen(),

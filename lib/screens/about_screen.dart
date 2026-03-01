@@ -8,7 +8,7 @@ class AboutScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.bg,
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
         title: const Text('About'),
         leading: IconButton(
@@ -16,188 +16,190 @@ class AboutScreen extends StatelessWidget {
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
-            // ── App identity card ────────────────────────────────────────
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(28),
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [Color(0xFF0A1628), AppColors.card],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
+      body: AppBackground(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            children: [
+              // ── App identity card ────────────────────────────────────────
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(28),
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFF0A1628), AppColors.card],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                  ),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: AppColors.teal.withOpacity(0.2)),
                 ),
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: AppColors.teal.withOpacity(0.2)),
-              ),
-              child: Column(
-                children: [
-                  Container(
-                    width: 80, height: 80,
-                    decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        colors: [AppColors.teal, AppColors.blue],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
+                child: Column(
+                  children: [
+                    Container(
+                      width: 80, height: 80,
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [AppColors.teal, AppColors.blue],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        borderRadius: BorderRadius.circular(22),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors.teal.withOpacity(0.3),
+                            blurRadius: 24,
+                            offset: const Offset(0, 6),
+                          ),
+                        ],
                       ),
-                      borderRadius: BorderRadius.circular(22),
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors.teal.withOpacity(0.3),
-                          blurRadius: 24,
-                          offset: const Offset(0, 6),
-                        ),
-                      ],
+                      child: const Icon(Icons.sign_language_rounded, size: 44, color: Colors.white),
                     ),
-                    child: const Icon(Icons.sign_language_rounded, size: 44, color: Colors.white),
-                  ),
-                  const SizedBox(height: 18),
-                  const Text(
-                    'BANGLA SIGN TRANSLATOR',
-                    style: TextStyle(
-                      fontSize: 18, fontWeight: FontWeight.w900,
-                      color: AppColors.text, letterSpacing: 1.5,
+                    const SizedBox(height: 18),
+                    const Text(
+                      'BANGLA SIGN TRANSLATOR',
+                      style: TextStyle(
+                        fontSize: 18, fontWeight: FontWeight.w900,
+                        color: AppColors.text, letterSpacing: 1.5,
+                      ),
+                      textAlign: TextAlign.center,
                     ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 8),
-                  const StatusBadge(label: 'v1.0.0', color: AppColors.teal),
-                ],
+                    const SizedBox(height: 8),
+                    const StatusBadge(label: 'v1.0.0', color: AppColors.teal),
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(height: 24),
-
-            // ── Description ──────────────────────────────────────────────
-            const SectionHeader(title: 'About This App'),
-            const _InfoCard(
-              icon: Icons.info_outline,
-              color: AppColors.blue,
-              content:
-                  'Bangla Sign Language Translator is an AI-powered mobile application '
-                  'that helps bridge the communication gap for the Deaf and Hard of Hearing '
-                  'community in Bangladesh.\n\n'
-                  'Using a TFLite deep learning model trained on Bangla Sign Language gestures, '
-                  'the app recognizes hand signs through the device camera and translates them '
-                  'into spoken or written Bangla in real time.',
-            ),
-            const SizedBox(height: 20),
-
-            // ── Features ─────────────────────────────────────────────────
-            const SectionHeader(title: 'Key Features'),
-            const _FeatureRow(
-              icon: Icons.camera_alt_rounded, color: AppColors.teal,
-              label: 'Real-time Sign Detection',
-              sub: 'Live camera translation using TFLite',
-            ),
-            const _FeatureRow(
-              icon: Icons.history_rounded, color: AppColors.blue,
-              label: 'Translation History',
-              sub: 'Review all past recognized signs',
-            ),
-            const _FeatureRow(
-              icon: Icons.play_lesson_rounded, color: Color(0xFFFF6B6B),
-              label: 'Learn Signs',
-              sub: 'Video library for each sign word',
-            ),
-            const _FeatureRow(
-              icon: Icons.volume_up_rounded, color: AppColors.warning,
-              label: 'Text-to-Speech',
-              sub: 'Speak recognized words aloud',
-            ),
-            const _FeatureRow(
-              icon: Icons.people_rounded, color: Color(0xFFD65DB1),
-              label: 'Community Posts',
-              sub: 'Share progress with other learners',
-            ),
-            const SizedBox(height: 20),
-
-            // ── Tech stack ───────────────────────────────────────────────
-            const SectionHeader(title: 'Tech Stack'),
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: AppColors.card,
-                borderRadius: BorderRadius.circular(14),
-                border: Border.all(color: AppColors.border),
+              const SizedBox(height: 24),
+        
+              // ── Description ──────────────────────────────────────────────
+              const SectionHeader(title: 'About This App'),
+              const _InfoCard(
+                icon: Icons.info_outline,
+                color: AppColors.blue,
+                content:
+                    'Bangla Sign Language Translator is an AI-powered mobile application '
+                    'that helps bridge the communication gap for the Deaf and Hard of Hearing '
+                    'community in Bangladesh.\n\n'
+                    'Using a TFLite deep learning model trained on Bangla Sign Language gestures, '
+                    'the app recognizes hand signs through the device camera and translates them '
+                    'into spoken or written Bangla in real time.',
               ),
-              child: const Column(
-                children: [
-                  _TechRow(label: 'Framework',  value: 'Flutter (Dart)'),
-                  Divider(color: AppColors.border, height: 20),
-                  _TechRow(label: 'ML Model',   value: 'TensorFlow Lite'),
-                  Divider(color: AppColors.border, height: 20),
-                  _TechRow(label: 'Backend',    value: 'Node.js + Express'),
-                  Divider(color: AppColors.border, height: 20),
-                  _TechRow(label: 'Database',   value: 'MongoDB Atlas'),
-                  Divider(color: AppColors.border, height: 20),
-                  _TechRow(label: 'Auth',       value: 'JWT (Role-based)'),
-                ],
+              const SizedBox(height: 20),
+        
+              // ── Features ─────────────────────────────────────────────────
+              const SectionHeader(title: 'Key Features'),
+              const _FeatureRow(
+                icon: Icons.camera_alt_rounded, color: AppColors.teal,
+                label: 'Real-time Sign Detection',
+                sub: 'Live camera translation using TFLite',
               ),
-            ),
-            const SizedBox(height: 20),
-
-            // ── Developer credits ────────────────────────────────────────
-            const SectionHeader(title: 'Developer'),
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: AppColors.card,
-                borderRadius: BorderRadius.circular(14),
-                border: Border.all(color: AppColors.border),
+              const _FeatureRow(
+                icon: Icons.history_rounded, color: AppColors.blue,
+                label: 'Translation History',
+                sub: 'Review all past recognized signs',
               ),
-              child: Row(
-                children: [
-                  Container(
-                    width: 48, height: 48,
-                    decoration: BoxDecoration(
-                      gradient: const LinearGradient(colors: [AppColors.teal, AppColors.blue]),
-                      borderRadius: BorderRadius.circular(12),
+              const _FeatureRow(
+                icon: Icons.play_lesson_rounded, color: Color(0xFFFF6B6B),
+                label: 'Learn Signs',
+                sub: 'Video library for each sign word',
+              ),
+              const _FeatureRow(
+                icon: Icons.volume_up_rounded, color: AppColors.warning,
+                label: 'Text-to-Speech',
+                sub: 'Speak recognized words aloud',
+              ),
+              const _FeatureRow(
+                icon: Icons.people_rounded, color: Color(0xFFD65DB1),
+                label: 'Community Posts',
+                sub: 'Share progress with other learners',
+              ),
+              const SizedBox(height: 20),
+        
+              // ── Tech stack ───────────────────────────────────────────────
+              const SectionHeader(title: 'Tech Stack'),
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: AppColors.card,
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(color: AppColors.border),
+                ),
+                child: const Column(
+                  children: [
+                    _TechRow(label: 'Framework',  value: 'Flutter (Dart)'),
+                    Divider(color: AppColors.border, height: 20),
+                    _TechRow(label: 'ML Model',   value: 'TensorFlow Lite'),
+                    Divider(color: AppColors.border, height: 20),
+                    _TechRow(label: 'Backend',    value: 'Node.js + Express'),
+                    Divider(color: AppColors.border, height: 20),
+                    _TechRow(label: 'Database',   value: 'MongoDB Atlas'),
+                    Divider(color: AppColors.border, height: 20),
+                    _TechRow(label: 'Auth',       value: 'JWT (Role-based)'),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 20),
+        
+              // ── Developer credits ────────────────────────────────────────
+              const SectionHeader(title: 'Developer'),
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: AppColors.card,
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(color: AppColors.border),
+                ),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 48, height: 48,
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(colors: [AppColors.teal, AppColors.blue]),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: const Icon(Icons.code_rounded, color: Colors.white, size: 24),
                     ),
-                    child: const Icon(Icons.code_rounded, color: Colors.white, size: 24),
-                  ),
-                  const SizedBox(width: 14),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text('BST Dev Team',
-                            style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: AppColors.text)),
-                        const SizedBox(height: 3),
-                        const Text('Bangladesh Sign Language Project',
-                            style: TextStyle(fontSize: 12, color: AppColors.textMuted)),
-                        const SizedBox(height: 8),
-                        Row(
-                          children: const [
-                            StatusBadge(label: 'Day 1 Build', color: AppColors.teal),
-                            SizedBox(width: 6),
-                            StatusBadge(label: 'UI Skeleton', color: AppColors.blue),
-                          ],
-                        ),
-                      ],
+                    const SizedBox(width: 14),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text('BST Dev Team',
+                              style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: AppColors.text)),
+                          const SizedBox(height: 3),
+                          const Text('Bangladesh Sign Language Project',
+                              style: TextStyle(fontSize: 12, color: AppColors.textMuted)),
+                          const SizedBox(height: 8),
+                          Row(
+                            children: const [
+                              StatusBadge(label: 'Day 1 Build', color: AppColors.teal),
+                              SizedBox(width: 6),
+                              StatusBadge(label: 'UI Skeleton', color: AppColors.blue),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(height: 28),
-
-            // ── Footer ───────────────────────────────────────────────────
-            const Text(
-              '© 2024 BST Dev Team',
-              style: TextStyle(fontSize: 11, color: AppColors.textDim),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 4),
-            const Text(
-              'All rights reserved',
-              style: TextStyle(fontSize: 10, color: AppColors.textDim),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 20),
-          ],
+              const SizedBox(height: 28),
+        
+              // ── Footer ───────────────────────────────────────────────────
+              const Text(
+                '© 2024 BST Dev Team',
+                style: TextStyle(fontSize: 11, color: AppColors.textDim),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 4),
+              const Text(
+                'All rights reserved',
+                style: TextStyle(fontSize: 10, color: AppColors.textDim),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 20),
+            ],
+          ),
         ),
       ),
     );

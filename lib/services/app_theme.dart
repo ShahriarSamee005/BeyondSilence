@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class AppColors {
   AppColors._();
@@ -31,6 +32,9 @@ class AppTheme {
     useMaterial3: true,
     brightness: Brightness.dark,
     scaffoldBackgroundColor: AppColors.bg,
+    textTheme: GoogleFonts.quicksandTextTheme(
+      ThemeData.dark().textTheme,
+    ),
     colorScheme: const ColorScheme.dark(
       primary: AppColors.teal,
       secondary: AppColors.blue,
@@ -39,15 +43,17 @@ class AppTheme {
       onPrimary: AppColors.bg,
       onSurface: AppColors.text,
     ),
-    appBarTheme: const AppBarTheme(
+    appBarTheme: AppBarTheme(
       backgroundColor: AppColors.surface,
       elevation: 0,
       centerTitle: true,
-      titleTextStyle: TextStyle(
-        fontSize: 16, fontWeight: FontWeight.w700,
-        color: AppColors.text, letterSpacing: 0.8,
+      titleTextStyle: GoogleFonts.quicksand(
+        fontSize: 16,
+        fontWeight: FontWeight.w700,
+        color: AppColors.text,
+        letterSpacing: 0.8,
       ),
-      iconTheme: IconThemeData(color: AppColors.text),
+      iconTheme: const IconThemeData(color: AppColors.text),
     ),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
@@ -65,7 +71,7 @@ class AppTheme {
         borderRadius: BorderRadius.circular(12),
         borderSide: const BorderSide(color: AppColors.teal, width: 1.5),
       ),
-      hintStyle: TextStyle(color: AppColors.textDim, fontSize: 14),
+      hintStyle: GoogleFonts.quicksand(color: AppColors.textDim, fontSize: 14),
     ),
     cardTheme: CardThemeData(
       color: AppColors.card, elevation: 0,
@@ -77,7 +83,7 @@ class AppTheme {
     dividerTheme: const DividerThemeData(color: AppColors.border, thickness: 1),
     snackBarTheme: SnackBarThemeData(
       backgroundColor: AppColors.card,
-      contentTextStyle: const TextStyle(color: AppColors.text),
+      contentTextStyle: GoogleFonts.quicksand(color: AppColors.text),
       behavior: SnackBarBehavior.floating,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
     ),

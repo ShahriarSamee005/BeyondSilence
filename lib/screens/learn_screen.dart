@@ -21,81 +21,83 @@ class _LearnScreenState extends State<LearnScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.bg,
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
         title: const Text('Learn'),
         leading: IconButton(
             icon: const Icon(Icons.arrow_back_ios_new, size: 18),
             onPressed: () => Navigator.pop(context)),
       ),
-      body: Column(children: [
-        SizedBox(
-          height: 48,
-          child: ListView.separated(
-            scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            itemCount: _categories.length,
-            separatorBuilder: (_, __) => const SizedBox(width: 8),
-            itemBuilder: (_, i) {
-              final cat = _categories[i];
-              final active = cat == _category;
-              return GestureDetector(
-                onTap: () => setState(() => _category = cat),
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 200),
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  decoration: BoxDecoration(
-                    color: active ? AppColors.teal : AppColors.card,
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: active ? AppColors.teal : AppColors.border),
-                  ),
-                  child: Text(cat, style: TextStyle(
-                      fontSize: 12, fontWeight: FontWeight.w600,
-                      color: active ? AppColors.bg : AppColors.textMuted)),
-                ),
-              );
-            },
-          ),
-        ),
-        const SizedBox(height: 16),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: SectionHeader(title: '${_filtered.length} Signs'),
-        ),
-        Expanded(
-          child: GridView.builder(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 3, mainAxisSpacing: 10, crossAxisSpacing: 10, childAspectRatio: 0.9,
-            ),
-            itemCount: _filtered.length,
-            itemBuilder: (_, i) {
-              final word = _filtered[i];
-              return GestureDetector(
-                onTap: () => Navigator.push(context,
-                    MaterialPageRoute(builder: (_) => LearnDetailScreen(word: word))),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: AppColors.card, borderRadius: BorderRadius.circular(14),
-                    border: Border.all(color: AppColors.border),
-                  ),
-                  child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-                    Text(word.emoji, style: const TextStyle(fontSize: 30)),
-                    const SizedBox(height: 8),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 6),
-                      child: Text(word.word,
-                          style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700,
-                              color: AppColors.text, height: 1.4),
-                          textAlign: TextAlign.center),
+      body: AppBackground(
+        child: Column(children: [
+          SizedBox(
+            height: 48,
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              itemCount: _categories.length,
+              separatorBuilder: (_, __) => const SizedBox(width: 8),
+              itemBuilder: (_, i) {
+                final cat = _categories[i];
+                final active = cat == _category;
+                return GestureDetector(
+                  onTap: () => setState(() => _category = cat),
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 200),
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: active ? AppColors.teal : AppColors.card,
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: active ? AppColors.teal : AppColors.border),
                     ),
-                  ]),
-                ),
-              );
-            },
+                    child: Text(cat, style: TextStyle(
+                        fontSize: 12, fontWeight: FontWeight.w600,
+                        color: active ? AppColors.bg : AppColors.textMuted)),
+                  ),
+                );
+              },
+            ),
           ),
-        ),
-      ]),
+          const SizedBox(height: 16),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: SectionHeader(title: '${_filtered.length} Signs'),
+          ),
+          Expanded(
+            child: GridView.builder(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3, mainAxisSpacing: 10, crossAxisSpacing: 10, childAspectRatio: 0.9,
+              ),
+              itemCount: _filtered.length,
+              itemBuilder: (_, i) {
+                final word = _filtered[i];
+                return GestureDetector(
+                  onTap: () => Navigator.push(context,
+                      MaterialPageRoute(builder: (_) => LearnDetailScreen(word: word))),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: AppColors.card, borderRadius: BorderRadius.circular(14),
+                      border: Border.all(color: AppColors.border),
+                    ),
+                    child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+                      Text(word.emoji, style: const TextStyle(fontSize: 30)),
+                      const SizedBox(height: 8),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 6),
+                        child: Text(word.word,
+                            style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700,
+                                color: AppColors.text, height: 1.4),
+                            textAlign: TextAlign.center),
+                      ),
+                    ]),
+                  ),
+                );
+              },
+            ),
+          ),
+        ]),
+      ),
     );
   }
 }
