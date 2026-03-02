@@ -1,6 +1,9 @@
+// lib/screens/login_screen.dart
+
 import 'package:flutter/material.dart';
 import '../services/app_theme.dart';
 import '../services/auth_service.dart';
+import '../services/api_service.dart';
 import '../models/models.dart';
 import '../widgets/widgets.dart';
 import 'home_screen.dart';
@@ -14,6 +17,7 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
+  final _nameCtrl = TextEditingController();
   final _emailCtrl = TextEditingController();
   final _passCtrl = TextEditingController();
   final _confirmCtrl = TextEditingController();
@@ -21,9 +25,11 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _isLoginMode = true;
   bool _loading = false;
   String? _error;
+  String? _success;
 
   @override
   void dispose() {
+    _nameCtrl.dispose();
     _emailCtrl.dispose();
     _passCtrl.dispose();
     _confirmCtrl.dispose();
@@ -32,29 +38,51 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
-    setState(() { _loading = true; _error = null; });
+    setState(() {
+      _loading = true;
+      _error = null;
+      _success = null;
+    });
 
-    if (_isLoginMode) {
-      final user = await AuthService.login(
-        email: _emailCtrl.text.trim(),
-        password: _passCtrl.text,
-      );
-      if (!mounted) return;
-      if (user == null) {
+    try {
+      if (_isLoginMode) {
+        // ─── LOGIN ───
+        final user = await AuthService.login(
+          email: _emailCtrl.text.trim(),
+          password: _passCtrl.text,
+        );
+        if (!mounted) return;
+        _goHome(user);
+      } else {
+        // ─── REGISTER ───
+        final message = await AuthService.signup(
+          name: _nameCtrl.text.trim(),
+          email: _emailCtrl.text.trim(),
+          password: _passCtrl.text,
+        );
+        if (!mounted) return;
         setState(() {
           _loading = false;
-          _error = 'Invalid email or password. Please try again.';
+          _success = message;
+          // Switch to login mode after successful registration
+          _isLoginMode = true;
+          _nameCtrl.clear();
+          _passCtrl.clear();
+          _confirmCtrl.clear();
         });
-        return;
       }
-      _goHome(user);
-    } else {
-      final user = await AuthService.signup(
-        email: _emailCtrl.text.trim(),
-        password: _passCtrl.text,
-      );
+    } on ApiException catch (e) {
       if (!mounted) return;
-      _goHome(user);
+      setState(() {
+        _loading = false;
+        _error = e.message;
+      });
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _loading = false;
+        _error = 'Something went wrong. Please try again.';
+      });
     }
   }
 
@@ -83,13 +111,15 @@ class _LoginScreenState extends State<LoginScreen> {
 
                   // Logo
                   Container(
-                    width: 200, height: 200,
+                    width: 200,
+                    height: 200,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(28),
                       boxShadow: [
                         BoxShadow(
                           color: AppColors.teal.withOpacity(0.25),
-                          blurRadius: 20, offset: const Offset(0, 6),
+                          blurRadius: 20,
+                          offset: const Offset(0, 6),
                         ),
                       ],
                     ),
@@ -107,16 +137,39 @@ class _LoginScreenState extends State<LoginScreen> {
                   Text(
                     _isLoginMode ? 'Welcome back!' : 'Create account',
                     style: const TextStyle(
-                      fontSize: 20, fontWeight: FontWeight.w800,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w800,
                       color: AppColors.text,
                     ),
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    _isLoginMode ? 'Sign in to continue' : 'Join BeyondSilence today',
-                    style: const TextStyle(fontSize: 14, color: AppColors.textMuted),
+                    _isLoginMode
+                        ? 'Sign in to continue'
+                        : 'Join BeyondSilence today',
+                    style: const TextStyle(
+                        fontSize: 14, color: AppColors.textMuted),
                   ),
                   const SizedBox(height: 36),
+
+                  // Success message (after registration)
+                  if (_success != null)
+                    Container(
+                      width: double.infinity,
+                      margin: const EdgeInsets.only(bottom: 16),
+                      padding: const EdgeInsets.all(14),
+                      decoration: BoxDecoration(
+                        color: AppColors.success.withOpacity(0.08),
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(
+                            color: AppColors.success.withOpacity(0.3)),
+                      ),
+                      child: Text(
+                        _success!,
+                        style: const TextStyle(
+                            fontSize: 12, color: AppColors.success),
+                      ),
+                    ),
 
                   // Error
                   if (_error != null)
@@ -127,56 +180,80 @@ class _LoginScreenState extends State<LoginScreen> {
                       decoration: BoxDecoration(
                         color: AppColors.error.withOpacity(0.08),
                         borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: AppColors.error.withOpacity(0.3)),
+                        border:
+                            Border.all(color: AppColors.error.withOpacity(0.3)),
                       ),
                       child: Text(_error!,
-                          style: const TextStyle(fontSize: 12, color: AppColors.error)),
+                          style: const TextStyle(
+                              fontSize: 12, color: AppColors.error)),
                     ),
 
                   // Form
                   Form(
                     key: _formKey,
-                    child: Column(children: [
-                      AppTextField(
-                        label: 'EMAIL',
-                        hint: 'Enter your email',
-                        controller: _emailCtrl,
-                        prefixIcon: Icons.email_outlined,
-                        keyboardType: TextInputType.emailAddress,
-                        validator: (v) {
-                          if (v == null || v.isEmpty) return 'Email required';
-                          if (!v.contains('@')) return 'Enter valid email';
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 16),
-                      AppTextField(
-                        label: 'PASSWORD',
-                        hint: 'Enter your password',
-                        controller: _passCtrl,
-                        prefixIcon: Icons.lock_outline,
-                        isPassword: true,
-                        validator: (v) {
-                          if (v == null || v.isEmpty) return 'Password required';
-                          if (v.length < 6) return 'Min 6 characters';
-                          return null;
-                        },
-                      ),
-                      if (!_isLoginMode) ...[
-                        const SizedBox(height: 16),
+                    child: Column(
+                      children: [
+                        // Name field — only in signup mode
+                        if (!_isLoginMode) ...[
+                          AppTextField(
+                            label: 'FULL NAME',
+                            hint: 'Enter your full name',
+                            controller: _nameCtrl,
+                            prefixIcon: Icons.person_outline,
+                            validator: (v) {
+                              if (v == null || v.trim().isEmpty) {
+                                return 'Name required';
+                              }
+                              return null;
+                            },
+                          ),
+                          const SizedBox(height: 16),
+                        ],
                         AppTextField(
-                          label: 'CONFIRM PASSWORD',
-                          hint: 'Re-enter your password',
-                          controller: _confirmCtrl,
-                          prefixIcon: Icons.lock_outline,
-                          isPassword: true,
+                          label: 'EMAIL',
+                          hint: 'Enter your email',
+                          controller: _emailCtrl,
+                          prefixIcon: Icons.email_outlined,
+                          keyboardType: TextInputType.emailAddress,
                           validator: (v) {
-                            if (v != _passCtrl.text) return 'Passwords do not match';
+                            if (v == null || v.isEmpty) return 'Email required';
+                            if (!v.contains('@')) return 'Enter valid email';
                             return null;
                           },
                         ),
+                        const SizedBox(height: 16),
+                        AppTextField(
+                          label: 'PASSWORD',
+                          hint: 'Enter your password',
+                          controller: _passCtrl,
+                          prefixIcon: Icons.lock_outline,
+                          isPassword: true,
+                          validator: (v) {
+                            if (v == null || v.isEmpty) {
+                              return 'Password required';
+                            }
+                            if (v.length < 6) return 'Min 6 characters';
+                            return null;
+                          },
+                        ),
+                        if (!_isLoginMode) ...[
+                          const SizedBox(height: 16),
+                          AppTextField(
+                            label: 'CONFIRM PASSWORD',
+                            hint: 'Re-enter your password',
+                            controller: _confirmCtrl,
+                            prefixIcon: Icons.lock_outline,
+                            isPassword: true,
+                            validator: (v) {
+                              if (v != _passCtrl.text) {
+                                return 'Passwords do not match';
+                              }
+                              return null;
+                            },
+                          ),
+                        ],
                       ],
-                    ]),
+                    ),
                   ),
                   const SizedBox(height: 28),
 
@@ -185,25 +262,32 @@ class _LoginScreenState extends State<LoginScreen> {
                           color: AppColors.teal, strokeWidth: 2)
                       : PrimaryButton(
                           label: _isLoginMode ? 'Sign In' : 'Create Account',
-                          icon: _isLoginMode ? Icons.login_rounded : Icons.person_add_outlined,
+                          icon: _isLoginMode
+                              ? Icons.login_rounded
+                              : Icons.person_add_outlined,
                           onTap: _submit,
                         ),
                   const SizedBox(height: 20),
 
                   Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                     Text(
-                      _isLoginMode ? "Don't have an account? " : 'Already have an account? ',
-                      style: const TextStyle(fontSize: 13, color: AppColors.textMuted),
+                      _isLoginMode
+                          ? "Don't have an account? "
+                          : 'Already have an account? ',
+                      style: const TextStyle(
+                          fontSize: 13, color: AppColors.textMuted),
                     ),
                     GestureDetector(
                       onTap: () => setState(() {
                         _isLoginMode = !_isLoginMode;
                         _error = null;
+                        _success = null;
                       }),
                       child: Text(
                         _isLoginMode ? 'Sign Up' : 'Sign In',
                         style: const TextStyle(
-                            fontSize: 13, fontWeight: FontWeight.w800,
+                            fontSize: 13,
+                            fontWeight: FontWeight.w800,
                             color: AppColors.teal),
                       ),
                     ),

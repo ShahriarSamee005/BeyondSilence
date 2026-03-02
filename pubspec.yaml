@@ -1,17 +1,23 @@
 name: bangla_sign_translator
-description: Bangla Sign Language Translator — Day 1 UI Skeleton
-publish_to: 'none'
+description: Bangla Sign Language Translator
+publish_to: "none"
 version: 1.0.0+1
 
 environment:
-  sdk: '>=3.0.0 <4.0.0'
+  sdk: ">=3.0.0 <4.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
+
+  http: ^1.2.0
+  http_parser: ^4.0.2
   cupertino_icons: ^1.0.6
   google_fonts: ^6.1.0
   shared_preferences: ^2.2.2
+  video_player: ^2.8.6
+  chewie: ^1.8.1
+  image_picker: ^1.0.7
 
 dev_dependencies:
   flutter_test:

@@ -1,71 +1,172 @@
+// lib/models/models.dart
+
 class UserModel {
-  final String name, email, role;
-  const UserModel({required this.name, required this.email, required this.role});
+  final String id, name, email, role;
+  final String? profilePicture;
+
+  const UserModel({
+    required this.id,
+    required this.name,
+    required this.email,
+    required this.role,
+    this.profilePicture,
+  });
+
   bool get isAdmin => role == 'admin';
+
+  factory UserModel.fromJson(Map<String, dynamic> json) {
+    return UserModel(
+      id: json['_id'] ?? json['id'] ?? '',
+      name: json['name'] ?? '',
+      email: json['email'] ?? '',
+      role: json['role'] ?? 'user',
+      profilePicture: json['profilePicture'],
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'name': name,
+        'email': email,
+        'role': role,
+        'profilePicture': profilePicture,
+      };
 }
 
 class HistoryEntry {
   final String word, time;
   final int confidencePercent;
-  const HistoryEntry({required this.word, required this.confidencePercent, required this.time});
-}
 
-class PostModel {
-  final String id, userName, userRole, content, timestamp;
-  final bool hasImage, hasVideo;
-  const PostModel({
-    required this.id, required this.userName, required this.userRole,
-    required this.content, required this.timestamp,
-    this.hasImage = false, this.hasVideo = false,
+  const HistoryEntry({
+    required this.word,
+    required this.confidencePercent,
+    required this.time,
   });
 }
 
-class LearnWord {
-  final String word, emoji, category;
-  const LearnWord({required this.word, required this.emoji, required this.category});
+class FeedbackModel {
+  final String id;
+  final String type;
+  final String? message;
+  final String? mediaUrl;
+  final String status;
+  final String userId;
+  final String? userEmail;
+  final String createdAt;
+
+  const FeedbackModel({
+    required this.id,
+    required this.type,
+    this.message,
+    this.mediaUrl,
+    required this.status,
+    required this.userId,
+    this.userEmail,
+    required this.createdAt,
+  });
+
+  factory FeedbackModel.fromJson(Map<String, dynamic> json) {
+    // Handle populated user field (admin endpoint) vs plain user id
+    String userId = '';
+    String? userEmail;
+
+    if (json['user'] is Map) {
+      userId = json['user']['_id'] ?? '';
+      userEmail = json['user']['email'];
+    } else {
+      userId = json['user'] ?? '';
+    }
+
+    return FeedbackModel(
+      id: json['_id'] ?? json['id'] ?? '',
+      type: json['type'] ?? '',
+      message: json['message'],
+      mediaUrl: json['mediaUrl'],
+      status: json['status'] ?? 'pending',
+      userId: userId,
+      userEmail: userEmail,
+      createdAt: json['createdAt'] ?? '',
+    );
+  }
+
+  String get timeAgo {
+    try {
+      final dt = DateTime.parse(createdAt);
+      final diff = DateTime.now().difference(dt);
+      if (diff.inMinutes < 1) return 'Just now';
+      if (diff.inMinutes < 60) return '${diff.inMinutes}m ago';
+      if (diff.inHours < 24) return '${diff.inHours}h ago';
+      if (diff.inDays < 7) return '${diff.inDays}d ago';
+      return '${dt.day}/${dt.month}/${dt.year}';
+    } catch (_) {
+      return createdAt;
+    }
+  }
 }
 
-class DummyData {
-  DummyData._();
+class LearnWord {
+  final String id;
+  final String banglaWord;
+  final String englishWord;
+  final String emoji;
+  final String category;
+  final String? videoUrl;
+  final String? description;
+  final List<String> steps;
 
-  static const List<HistoryEntry> historyEntries = [
-    HistoryEntry(word: 'ভাই (Bhai)', confidencePercent: 92, time: '10:35 PM'),
-    HistoryEntry(word: 'মা (Maa)', confidencePercent: 88, time: '10:37 PM'),
-    HistoryEntry(word: 'ডাক্তার (Doctor)', confidencePercent: 95, time: '10:41 PM'),
-    HistoryEntry(word: 'বন্ধু (Friend)', confidencePercent: 79, time: '10:44 PM'),
-    HistoryEntry(word: 'বই (Book)', confidencePercent: 84, time: '10:48 PM'),
-    HistoryEntry(word: 'স্কুল (School)', confidencePercent: 91, time: '10:52 PM'),
-    HistoryEntry(word: 'পানি (Water)', confidencePercent: 87, time: '11:02 PM'),
-    HistoryEntry(word: 'হ্যাঁ (Yes)', confidencePercent: 97, time: '11:10 PM'),
-  ];
+  const LearnWord({
+    required this.id,
+    required this.banglaWord,
+    required this.englishWord,
+    required this.emoji,
+    required this.category,
+    this.videoUrl,
+    this.description,
+    this.steps = const [],
+  });
 
-  static const List<LearnWord> learnWords = [
-    LearnWord(word: 'মা\nMaa', emoji: '👩', category: 'Family'),
-    LearnWord(word: 'ভাই\nBhai', emoji: '👦', category: 'Family'),
-    LearnWord(word: 'ডাক্তার\nDoctor', emoji: '🩺', category: 'Profession'),
-    LearnWord(word: 'স্কুল\nSchool', emoji: '🏫', category: 'Places'),
-    LearnWord(word: 'বন্ধু\nFriend', emoji: '🤝', category: 'Social'),
-    LearnWord(word: 'বই\nBook', emoji: '📚', category: 'Objects'),
-    LearnWord(word: 'পানি\nWater', emoji: '💧', category: 'Basics'),
-    LearnWord(word: 'হ্যাঁ\nYes', emoji: '✅', category: 'Basics'),
-    LearnWord(word: 'না\nNo', emoji: '❌', category: 'Basics'),
-    LearnWord(word: 'ধন্যবাদ\nThankYou', emoji: '🙏', category: 'Social'),
-    LearnWord(word: 'বাড়ি\nHome', emoji: '🏠', category: 'Places'),
-    LearnWord(word: 'খাবার\nFood', emoji: '🍚', category: 'Basics'),
-  ];
+  // Combined display like the original "মা\nMaa"
+  String get word => '$banglaWord\n$englishWord';
 
-  static const List<PostModel> dummyPosts = [
-    PostModel(id: '1', userName: 'Rahim Uddin', userRole: 'user',
-        content: 'Just practiced the Family category. Really improving!',
-        timestamp: '2 hours ago', hasImage: true),
-    PostModel(id: '2', userName: 'Nadia Islam', userRole: 'user',
-        content: 'The detection feature is amazing!',
-        timestamp: '4 hours ago'),
-    PostModel(id: '3', userName: 'Karim Hossain', userRole: 'admin',
-        content: 'New lesson pack added: Professions. Check the Learn tab!',
-        timestamp: '1 day ago', hasVideo: true),
-    PostModel(id: '4', userName: 'Sara Ahmed', userRole: 'user',
-        content: 'Can we add more words in the basics category?',
-        timestamp: '2 days ago'),
-  ];
+  factory LearnWord.fromJson(Map<String, dynamic> json) {
+    return LearnWord(
+      id: json['_id'] ?? json['id'] ?? '',
+      banglaWord: json['banglaWord'] ?? '',
+      englishWord: json['englishWord'] ?? '',
+      emoji: json['emoji'] ?? '🤟',
+      category: json['category'] ?? 'Basics',
+      videoUrl: json['videoUrl'],
+      description: json['description'],
+      steps: json['steps'] != null ? List<String>.from(json['steps']) : [],
+    );
+  }
+}
+
+class AdminUser {
+  final String id, name, email, role;
+  final bool isVerified;
+  final String? profilePicture;
+  final String? createdAt;
+
+  const AdminUser({
+    required this.id,
+    required this.name,
+    required this.email,
+    required this.role,
+    required this.isVerified,
+    this.profilePicture,
+    this.createdAt,
+  });
+
+  factory AdminUser.fromJson(Map<String, dynamic> json) {
+    return AdminUser(
+      id: json['_id'] ?? json['id'] ?? '',
+      name: json['name'] ?? '',
+      email: json['email'] ?? '',
+      role: json['role'] ?? 'user',
+      isVerified: json['isVerified'] ?? false,
+      profilePicture: json['profilePicture'],
+      createdAt: json['createdAt'],
+    );
+  }
 }
